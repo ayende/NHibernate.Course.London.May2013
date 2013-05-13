@@ -34,12 +34,25 @@ namespace NHibernate.Course.London.May2013.Controllers
 		public object Create(int custId)
 		{
 			var cust = Session.Load<Customer>(custId);
-			var id = Session.Save(new Order
+			var order = new Order
 				{
 					CreatedAt = DateTime.Now,
 					Customer = cust,
 					Total = 5
-				});
+				};
+			var id = Session.Save(order);
+
+			for (int i = 0; i < 5; i++)
+			{
+				var orderLine = new OrderLine
+					{
+						Product = Session.Load<Product>(65536),
+						Order = order,
+						Quantity = i + 1
+					};
+				order.OrderLines.Add(orderLine);
+				Session.Save(orderLine);
+			}
 			return Json(id);
 		}
 	}
