@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Web.Mvc;
 using NHibernate.Cfg;
 using NHibernate.Course.London.May2013.Models;
@@ -32,7 +33,7 @@ namespace NHibernate.Course.London.May2013.Controllers
 
 		private static readonly Lazy<ISessionFactory> sessionFactory = new Lazy<ISessionFactory>(() =>
 			{
-				var cfg = new Configuration()
+				Configuration cfg = new Configuration()
 					.DataBaseIntegration(db =>
 						{
 							db.Dialect<MsSql2008Dialect>();
@@ -40,24 +41,27 @@ namespace NHibernate.Course.London.May2013.Controllers
 							db.SchemaAction = SchemaAutoAction.Update;
 							db.BatchSize = 250;
 						})
-					.AddAssembly(typeof(Customer).Assembly);
+					.AddAssembly(typeof (Customer).Assembly);
 
 				var mapper = new ModelMapper();
+
+				mapper.AfterMapClass += 
+					(inspector, type, customizer) =>
+						 customizer.Table(Inflector.Net.Inflector.Pluralize(type.Name));
+
 				mapper.AddMappings(typeof (ProductMap).Assembly.GetTypes());
 				cfg.AddMapping(mapper.CompileMappingForAllExplicitlyAddedEntities());
 
 				return cfg.BuildSessionFactory();
 			});
 
-		public ISessionFactory SessionFactory { get { return sessionFactory.Value; } }
-
-		protected override JsonResult Json(object data, string contentType, System.Text.Encoding contentEncoding, JsonRequestBehavior behavior)
-		{
-			return base.Json(data, contentType, contentEncoding, JsonRequestBehavior.AllowGet);
-		}
-
 		private ISession session;
 		private ITransaction tx;
+
+		public ISessionFactory SessionFactory
+		{
+			get { return sessionFactory.Value; }
+		}
 
 		public new ISession Session
 		{
@@ -74,6 +78,12 @@ namespace NHibernate.Course.London.May2013.Controllers
 
 		protected bool DoNotCommit { get; set; }
 
+		protected override JsonResult Json(object data, string contentType, Encoding contentEncoding,
+		                                   JsonRequestBehavior behavior)
+		{
+			return base.Json(data, contentType, contentEncoding, JsonRequestBehavior.AllowGet);
+		}
+
 		protected override void OnActionExecuted(ActionExecutedContext filterContext)
 		{
 			if (filterContext.Exception != null)
@@ -86,7 +96,6 @@ namespace NHibernate.Course.London.May2013.Controllers
 				if (tx != null)
 					tx.Commit();
 			}
-
 		}
 	}
 }

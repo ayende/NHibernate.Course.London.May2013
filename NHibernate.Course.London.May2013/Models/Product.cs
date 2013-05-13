@@ -14,7 +14,6 @@ namespace NHibernate.Course.London.May2013.Models
 	{
 		public ProductMap()
 		{
-			Table("Products");
 			Id(x => x.Id, mapper => mapper.Generator(new HighLowGeneratorDef()));
 			Property(x => x.Name);
 			Property(x => x.Sku);
