@@ -10,9 +10,11 @@ namespace NHibernate.Course.London.May2013.Models
 		public virtual int Id { get; set; } 
 		public virtual string FullName { get; set; }
 		public virtual IDictionary<string, Address> Addresses { get; set; }
+		public virtual IList<string> EmergencyContactNumbers { get; set; }
 
 		public Customer()
 		{
+		EmergencyContactNumbers = new List<string>();
 			Addresses = new Dictionary<string, Address>();
 		}
 	}
@@ -29,6 +31,12 @@ namespace NHibernate.Course.London.May2013.Models
 		{
 			Id(x => x.Id, mapper => mapper.Generator(new NativeGeneratorDef()));
 			Property(x => x.FullName);
+
+			List(x=>x.EmergencyContactNumbers, mapper =>
+				{
+					mapper.Table("EmergencyContactNumbers");
+					mapper.Key(key => key.Column("CustomerId"));
+				},relation => relation.Element(mapper => mapper.Column("Phone")));
 
 			Map(x => x.Addresses, mapper =>
 				{

@@ -19,6 +19,12 @@ namespace NHibernate.Course.London.May2013.Controllers
 						{
 							{"Home", new Address{City = "Hadera", State = "Israel"}},
 							{"Work", new Address{City = "London", State = "England"}},
+						},
+					EmergencyContactNumbers =
+						{
+							"01234",
+							"48523",
+							"82439"
 						}
 				});
 			return Json(new { Id = id });
