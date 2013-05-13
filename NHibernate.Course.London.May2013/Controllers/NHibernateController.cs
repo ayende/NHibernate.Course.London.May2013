@@ -38,15 +38,48 @@ namespace NHibernate.Course.London.May2013.Controllers
 							db.ConnectionStringName = Environment.MachineName;
 							db.SchemaAction = SchemaAutoAction.Update;
 						})
-					.AddAssembly(typeof(Customer).Assembly); 
+					.AddAssembly(typeof(Customer).Assembly);
 				return cfg.BuildSessionFactory();
 			});
 
-		public ISessionFactory SessionFactory {get { return sessionFactory.Value; }}
+		public ISessionFactory SessionFactory { get { return sessionFactory.Value; } }
 
 		protected override JsonResult Json(object data, string contentType, System.Text.Encoding contentEncoding, JsonRequestBehavior behavior)
 		{
 			return base.Json(data, contentType, contentEncoding, JsonRequestBehavior.AllowGet);
+		}
+
+		private ISession session;
+		private ITransaction tx;
+
+		public new ISession Session
+		{
+			get
+			{
+				if (session == null)
+				{
+					session = SessionFactory.OpenSession();
+					tx = session.BeginTransaction();
+				}
+				return session;
+			}
+		}
+
+		protected bool DoNotCommit { get; set; }
+
+		protected override void OnActionExecuted(ActionExecutedContext filterContext)
+		{
+			if (filterContext.Exception != null)
+				return;
+			using (session)
+			using (tx)
+			{
+				if (DoNotCommit)
+					return;
+				if (tx != null)
+					tx.Commit();
+			}
+
 		}
 	}
 }
