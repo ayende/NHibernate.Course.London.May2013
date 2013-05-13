@@ -3,6 +3,7 @@ using System.Web.Mvc;
 using NHibernate.Cfg;
 using NHibernate.Course.London.May2013.Models;
 using NHibernate.Dialect;
+using NHibernate.Mapping.ByCode;
 using Environment = System.Environment;
 
 namespace NHibernate.Course.London.May2013.Controllers
@@ -39,6 +40,11 @@ namespace NHibernate.Course.London.May2013.Controllers
 							db.SchemaAction = SchemaAutoAction.Update;
 						})
 					.AddAssembly(typeof(Customer).Assembly);
+
+				var mapper = new ModelMapper();
+				mapper.AddMappings(typeof (ProductMap).Assembly.GetTypes());
+				cfg.AddMapping(mapper.CompileMappingForAllExplicitlyAddedEntities());
+
 				return cfg.BuildSessionFactory();
 			});
 
