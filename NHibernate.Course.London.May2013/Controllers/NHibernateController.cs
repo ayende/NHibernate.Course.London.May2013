@@ -38,6 +38,7 @@ namespace NHibernate.Course.London.May2013.Controllers
 							db.Dialect<MsSql2008Dialect>();
 							db.ConnectionStringName = Environment.MachineName;
 							db.SchemaAction = SchemaAutoAction.Update;
+							db.BatchSize = 250;
 						})
 					.AddAssembly(typeof(Customer).Assembly);
 

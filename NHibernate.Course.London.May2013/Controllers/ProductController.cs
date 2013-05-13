@@ -4,14 +4,17 @@ namespace NHibernate.Course.London.May2013.Controllers
 {
 	public class ProductController : NHibernateController
 	{
-		 public object Save(string name, string sku)
+		 public object Save(string name, string sku, int count)
 		 {
-			var id = Session.Save(new Product
+			 for (int i = 0; i < count; i++)
+			 {
+				 Session.Save(new Product
 				 {
 					 Name = name,
 					 Sku = sku
 				 });
-			 return Json(id);
+			 }
+			 return Json("ok");
 		 }
 	}
 }
