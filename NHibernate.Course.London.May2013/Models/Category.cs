@@ -29,8 +29,10 @@ namespace NHibernate.Course.London.May2013.Models
 					mapper.Key(key => key.Column("CategoryId"));
 					mapper.Inverse(true);
 				},
-			    relation => relation.ManyToMany(mapper => mapper.Column("ProductId"))
-				);
+				relation =>
+				{
+					relation.ManyToMany(mapper => mapper.Column("ProductId"));
+				});
 		}
 	}
 }

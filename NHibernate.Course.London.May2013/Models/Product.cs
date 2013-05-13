@@ -1,4 +1,6 @@
-﻿using NHibernate.Mapping.ByCode;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using NHibernate.Mapping.ByCode;
 using NHibernate.Mapping.ByCode.Conformist;
 
 namespace NHibernate.Course.London.May2013.Models
@@ -8,6 +10,13 @@ namespace NHibernate.Course.London.May2013.Models
 		public virtual int Id { get; set; }
 		public virtual string Name { get; set; }
 		public virtual string Sku { get; set; }
+
+		public virtual ICollection<Category> Categories { get; set; }
+
+		public Product()
+		{
+			Categories = new Collection<Category>();
+		}
 	}
 
 	public class ProductMap : ClassMapping<Product>
@@ -17,6 +26,17 @@ namespace NHibernate.Course.London.May2013.Models
 			Id(x => x.Id, mapper => mapper.Generator(new HighLowGeneratorDef()));
 			Property(x => x.Name);
 			Property(x => x.Sku);
+
+			Set(x => x.Categories, mapper =>
+				{
+					mapper.Table("ProductCategories");
+					mapper.Key(key => key.Column("ProductId"));
+				},
+				relation =>
+				{
+					relation.ManyToMany(mapper => mapper.Column("CategoryId"));
+				});
+
 		}
 	}
 }

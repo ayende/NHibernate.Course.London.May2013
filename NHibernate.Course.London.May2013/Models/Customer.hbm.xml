@@ -8,7 +8,11 @@
 			<generator class="native"/>
 		</id>
 		<property name="FullName"/>
-		
+		<map>
+			<key></key>
+			<index column="foo"/>
+			<composite-element
+		</map>
 	</class>
 
 </hibernate-mapping>

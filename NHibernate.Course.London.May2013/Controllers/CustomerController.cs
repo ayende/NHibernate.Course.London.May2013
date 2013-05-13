@@ -12,7 +12,15 @@ namespace NHibernate.Course.London.May2013.Controllers
 
 		public object New(string name)
 		{
-			var id = Session.Save(new Customer { FullName = name });
+			var id = Session.Save(new Customer
+				{
+					FullName = name,
+					Addresses =
+						{
+							{"Home", new Address{City = "Hadera", State = "Israel"}},
+							{"Work", new Address{City = "London", State = "England"}},
+						}
+				});
 			return Json(new { Id = id });
 		}
 	}
