@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Web.Mvc;
+using NHibernate.Cache;
 using NHibernate.Cfg;
 using NHibernate.Course.London.May2013.Models;
 using NHibernate.Dialect;
@@ -62,6 +63,11 @@ namespace NHibernate.Course.London.May2013.Controllers
 						db.ConnectionStringName = Environment.MachineName;
 						db.SchemaAction = SchemaAutoAction.Update;
 						db.BatchSize = 250;
+					})
+				.Cache(properties =>
+					{
+						properties.Provider<HashtableCacheProvider>();
+						properties.UseQueryCache = true;
 					})
 				.AddAssembly(typeof (Customer).Assembly);
 

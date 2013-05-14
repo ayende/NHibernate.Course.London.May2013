@@ -12,7 +12,8 @@ namespace NHibernate.Course.London.May2013.Controllers
 			return Json(new
 				{
 					cust.FullName,
-					cust.Version
+					cust.Version,
+					cust.Addresses.Count
 				});
 		}
 

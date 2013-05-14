@@ -31,7 +31,7 @@ namespace NHibernate.Course.London.May2013.Models
 	{
 		public CustomerMap()
 		{
-
+			Cache(x => x.Usage(CacheUsage.NonstrictReadWrite));
 			Id(x => x.Id, mapper => mapper.Generator(new NativeGeneratorDef()));
 			Property(x => x.FullName);
 
@@ -42,12 +42,14 @@ namespace NHibernate.Course.London.May2013.Models
 				{
 					mapper.Table("EmergencyContactNumbers");
 					mapper.Key(key => key.Column("CustomerId"));
+					mapper.Cache(cacheMapper => cacheMapper.Usage(CacheUsage.NonstrictReadWrite));
 				}, relation => relation.Element(mapper => mapper.Column("Phone")));
 
 			Map(x => x.Addresses, mapper =>
 				{
 					mapper.Table("CustomerAddresses");
 					mapper.Key(key => key.Column("CustomerId"));
+					mapper.Cache(cacheMapper => cacheMapper.Usage(CacheUsage.NonstrictReadWrite));
 				}, relation => relation.Component(mapper =>
 					{
 						mapper.Property(x => x.State);
