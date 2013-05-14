@@ -124,6 +124,7 @@
   <ItemGroup>
     <Compile Include="App_Data\Inflector.cs" />
     <Compile Include="App_Start\NHibernateProfilerBootstrapper.cs" />
+    <Compile Include="Controllers\AnimalController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\NHibernateController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
@@ -131,6 +132,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Animal.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\Customer.cs" />
     <Compile Include="Models\Order.cs" />
