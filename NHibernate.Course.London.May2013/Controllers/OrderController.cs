@@ -71,7 +71,12 @@ namespace NHibernate.Course.London.May2013.Controllers
 				{
 					CreatedAt = DateTime.Now,
 					Customer = cust,
-					Total = 5
+					Total = 5,
+					Attributes =
+						{
+							{"Active", true},
+							{"Status", 5}
+						}
 				};
 			var id = Session.Save(order);
 
@@ -87,6 +92,17 @@ namespace NHibernate.Course.London.May2013.Controllers
 				Session.Save(orderLine);
 			}
 			return Json(id);
+		}
+
+		public object DoLine()
+		{
+			Session.Save(new OrderLine
+				{
+					Amount = 5,
+					Currency = "USd",
+					Quantity = 51
+				});
+			return Json("ok");
 		}
 	}
 }

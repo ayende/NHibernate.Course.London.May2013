@@ -10,6 +10,9 @@ namespace NHibernate.Course.London.May2013.Models
 
 		public virtual Order Order { get; set; }
 		public virtual Product Product { get; set; }
+
+		public virtual decimal Amount { get; set; }
+		public virtual string Currency { get; set; }
 	}
 
 	public class OrderLineMap : ClassMapping<OrderLine>
@@ -21,6 +24,15 @@ namespace NHibernate.Course.London.May2013.Models
 
 			ManyToOne(x => x.Order, m => m.Column("OrderId"));
 			ManyToOne(x => x.Product);
+
+			Join("OrderLinesCharges", mapper =>
+				{
+					mapper.Key(keyMapper => keyMapper.Column("OrderLineId"));
+
+
+					mapper.Property(x => x.Amount);
+					mapper.Property(x => x.Currency);
+				});
 		}
 	}
 }

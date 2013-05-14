@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using NHibernate.Mapping.ByCode;
 using NHibernate.Mapping.ByCode.Conformist;
@@ -12,10 +13,14 @@ namespace NHibernate.Course.London.May2013.Models
 		public virtual decimal Total { get; set; }
 		public virtual DateTime CreatedAt { get; set; }
 		public virtual ICollection<OrderLine> OrderLines { get; set; }
+		public virtual Address ShippingAddress { get; set; }
+
+		public virtual IDictionary Attributes { get; set; }
 
 		public Order()
 		{
 			OrderLines = new List<OrderLine>();
+			Attributes = new Hashtable();
 		}
 	}
 
@@ -28,6 +33,22 @@ namespace NHibernate.Course.London.May2013.Models
 			Property(x => x.CreatedAt, m => m.Update(false));
 
 			ManyToOne(x => x.Customer);
+
+			Component(x=>x.ShippingAddress, mapper =>
+				{
+					mapper.Property(x=>x.State);
+					mapper.Property(x => x.City);
+				});
+
+			Component(order => order.Attributes, new
+				{
+					Active = false,
+					Status = 0
+				}, mapper =>
+					{
+						mapper.Property(x=>x.Active);
+						mapper.Property(x=>x.Status);
+					});
 
 			Bag(x => x.OrderLines,
 			    mapper =>
