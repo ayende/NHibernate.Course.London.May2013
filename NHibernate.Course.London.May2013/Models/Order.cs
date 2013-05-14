@@ -31,7 +31,7 @@ namespace NHibernate.Course.London.May2013.Models
 			Id(x => x.Id, mapper => mapper.Generator(new HighLowGeneratorDef()));
 			Property(x => x.Total);
 			Property(x => x.CreatedAt, m => m.Update(false));
-
+			Cache(x => x.Usage(CacheUsage.NonstrictReadWrite));
 			ManyToOne(x => x.Customer);
 
 			Component(x=>x.ShippingAddress, mapper =>
@@ -55,6 +55,7 @@ namespace NHibernate.Course.London.May2013.Models
 				    {
 					    mapper.Key(key => key.Column("OrderId"));
 					    mapper.Inverse(true);
+						mapper.Cache(cacheMapper => cacheMapper.Usage(CacheUsage.NonstrictReadWrite));
 				    },
 			    relation => relation.OneToMany());
 		}

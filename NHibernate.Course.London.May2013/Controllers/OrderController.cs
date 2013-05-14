@@ -38,13 +38,16 @@ namespace NHibernate.Course.London.May2013.Controllers
 	
 	public class OrderController : NHibernateController
 	{
+
 		public object Load(int id)
 		{
-			var order = Session.QueryOver<Order>()
-							   .Where(x => x.Id == id)
-							   .Fetch(x => x.Customer).Eager
-							   .SingleOrDefault();
-			return Json(order);
+			var order = Session.Get<Order>(id);
+			
+			return Json(new
+				{
+					order.Total,
+					order.OrderLines.Count
+				});
 		}
 
 
@@ -84,7 +87,7 @@ namespace NHibernate.Course.London.May2013.Controllers
 			{
 				var orderLine = new OrderLine
 					{
-						Product = Session.Load<Product>(65536),
+						Product = Session.Load<Product>(196608 ),
 						Order = order,
 						Quantity = i + 1
 					};

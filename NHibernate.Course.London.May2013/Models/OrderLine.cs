@@ -21,6 +21,7 @@ namespace NHibernate.Course.London.May2013.Models
 		{
 			Id(x => x.Id, mapper => mapper.Generator(new HighLowGeneratorDef()));
 			Property(x => x.Quantity);
+			Cache(x=>x.Usage(CacheUsage.NonstrictReadWrite));
 
 			ManyToOne(x => x.Order, m => m.Column("OrderId"));
 			ManyToOne(x => x.Product);
