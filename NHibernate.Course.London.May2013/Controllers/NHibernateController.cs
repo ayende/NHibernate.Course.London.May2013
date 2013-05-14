@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Globalization;
+using System.Reflection;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Web.Mvc;
 using NHibernate.Cfg;
@@ -33,27 +37,48 @@ namespace NHibernate.Course.London.May2013.Controllers
 
 		private static readonly Lazy<ISessionFactory> sessionFactory = new Lazy<ISessionFactory>(() =>
 			{
-				Configuration cfg = new Configuration()
-					.DataBaseIntegration(db =>
-						{
-							db.Dialect<MsSql2008Dialect>();
-							db.ConnectionStringName = Environment.MachineName;
-							db.SchemaAction = SchemaAutoAction.Update;
-							db.BatchSize = 250;
-						})
-					.AddAssembly(typeof (Customer).Assembly);
-
-				var mapper = new ModelMapper();
-
-				mapper.AfterMapClass += 
-					(inspector, type, customizer) =>
-						 customizer.Table(Inflector.Net.Inflector.Pluralize(type.Name));
-
-				mapper.AddMappings(typeof (ProductMap).Assembly.GetTypes());
-				cfg.AddMapping(mapper.CompileMappingForAllExplicitlyAddedEntities());
-
-				return cfg.BuildSessionFactory();
+				var sw = Stopwatch.StartNew();
+				var factory = CreateSessionFactory();
+				System.IO.File.WriteAllText(@"C:\Users\Ayende\Documents\Visual Studio 11\Projects\NHibernate.Course.London.May2013\NHibernate.Course.London.May2013\time.txt", sw.ElapsedMilliseconds.ToString(CultureInfo.InvariantCulture));
+				return factory;
 			});
+
+		private static ISessionFactory CreateSessionFactory()
+		{
+			if (System.IO.File.Exists("cfg.cache") &&
+			    System.IO.File.GetLastWriteTimeUtc("cfg.cache") > System.IO.File.GetLastWriteTimeUtc(Assembly.GetExecutingAssembly().Location))
+			{
+				using (var serializationStream = System.IO.File.OpenRead("cfg.cache"))
+				{
+					var configuration = (Configuration) new BinaryFormatter().Deserialize(serializationStream);
+					return configuration.BuildSessionFactory();
+				}
+			}
+
+			Configuration cfg = new Configuration()
+				.DataBaseIntegration(db =>
+					{
+						db.Dialect<MsSql2008Dialect>();
+						db.ConnectionStringName = Environment.MachineName;
+						db.SchemaAction = SchemaAutoAction.Update;
+						db.BatchSize = 250;
+					})
+				.AddAssembly(typeof (Customer).Assembly);
+
+			var mapper = new ModelMapper();
+
+			mapper.AfterMapClass +=
+				(inspector, type, customizer) =>
+				customizer.Table(Inflector.Net.Inflector.Pluralize(type.Name));
+
+			mapper.AddMappings(typeof (ProductMap).Assembly.GetTypes());
+			cfg.AddMapping(mapper.CompileMappingForAllExplicitlyAddedEntities());
+
+			using (var serializationStream = System.IO.File.Create("cfg.cache"))
+				new BinaryFormatter().Serialize(serializationStream, cfg);
+
+			return cfg.BuildSessionFactory();
+		}
 
 		private ISession session;
 		private ITransaction tx;
