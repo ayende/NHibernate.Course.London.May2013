@@ -86,11 +86,12 @@ namespace NHibernate.Course.London.May2013.Controllers
 
 		protected override void OnActionExecuted(ActionExecutedContext filterContext)
 		{
-			if (filterContext.Exception != null)
-				return;
 			using (session)
 			using (tx)
 			{
+				if (filterContext.Exception != null)
+					return;
+			
 				if (DoNotCommit)
 					return;
 				if (tx != null)
