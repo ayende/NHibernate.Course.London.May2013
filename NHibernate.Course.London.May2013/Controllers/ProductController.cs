@@ -4,6 +4,14 @@ using NHibernate.Linq;
 
 namespace NHibernate.Course.London.May2013.Controllers
 {
+	public static class QueryExtensions
+	{
+		public static IQueryable<Product> WhereUserIsActive(this IQueryable<Product> q)
+		{
+			return q.Where(x => x.Attributes["User"] == "IsActive");
+		}
+	}
+
 	public class ProductController : NHibernateController
 	{
 		public object CreateCat(string name)
@@ -33,8 +41,8 @@ namespace NHibernate.Course.London.May2013.Controllers
 		public object QueryByProp(string prop, string val)
 		{
 			var q = Session.Query<Product>()
-				.FetchMany(x => x.Attributes)
-						   .Where(x => x.Attributes[prop] == val)
+						   .FetchMany(x => x.Attributes)
+						   .WhereUserIsActive()
 						   .ToList();
 			return Json(q.Select(x=>x.Attributes));
 		}
