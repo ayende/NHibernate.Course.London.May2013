@@ -1,4 +1,6 @@
-﻿using NHibernate.Course.London.May2013.Models;
+﻿using System.Linq;
+using NHibernate.Course.London.May2013.Models;
+using NHibernate.Linq;
 
 namespace NHibernate.Course.London.May2013.Controllers
 {
@@ -22,16 +24,33 @@ namespace NHibernate.Course.London.May2013.Controllers
 
 		}
 
+		public object Load(int id)
+		{
+			var x = Session.Get<Product>(id);
+			return Json(x.Attributes);
+		}
+
+		public object QueryByProp(string prop, string val)
+		{
+			var q = Session.Query<Product>()
+				.FetchMany(x => x.Attributes)
+						   .Where(x => x.Attributes[prop] == val)
+						   .ToList();
+			return Json(q.Select(x=>x.Attributes));
+		}
+
 		public object Save(string name, string sku, int count)
 		{
-			for (int i = 0; i < count; i++)
-			{
-				Session.Save(new Product
+			Session.Save(new Product
 				{
 					Name = name,
-					Sku = sku
+					Sku = sku,
+					Attributes =
+						{
+							{"Volume", "59"},
+							{"MegaPixels", "3.5Px"}
+						}
 				});
-			}
 			return Json("ok");
 		}
 	}

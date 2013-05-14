@@ -12,10 +12,12 @@ namespace NHibernate.Course.London.May2013.Models
 		public virtual string Sku { get; set; }
 
 		public virtual ICollection<Category> Categories { get; set; }
+		public virtual IDictionary<string, string> Attributes { get; set; }
 
 		public Product()
 		{
 			Categories = new Collection<Category>();
+			Attributes =new Dictionary<string, string>();
 		}
 	}
 
@@ -26,6 +28,17 @@ namespace NHibernate.Course.London.May2013.Models
 			Id(x => x.Id, mapper => mapper.Generator(new HighLowGeneratorDef()));
 			Property(x => x.Name);
 			Property(x => x.Sku);
+
+			Map(x=>x.Attributes, mapper =>
+				{
+					mapper.Table("ProductAttributes");
+					mapper.Key(key => key.Column("ProductId"));
+					mapper.Lazy(CollectionLazy.NoLazy);
+					mapper.Fetch(CollectionFetchMode.Join);
+				},relation =>
+					{
+						relation.Element(mapper => mapper.Column("Val"));
+					});
 
 			Set(x => x.Categories, mapper =>
 				{
