@@ -71,6 +71,9 @@ namespace NHibernate.Course.London.May2013.Controllers
 				(inspector, type, customizer) =>
 				customizer.Table(Inflector.Net.Inflector.Pluralize(type.Name));
 
+			mapper.AfterMapManyToOne += (inspector, member, customizer) =>
+			                            customizer.Column(member.ToColumnName() + "Id");
+
 			mapper.AddMappings(typeof (ProductMap).Assembly.GetTypes());
 			cfg.AddMapping(mapper.CompileMappingForAllExplicitlyAddedEntities());
 

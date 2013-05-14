@@ -8,6 +8,11 @@ namespace NHibernate.Course.London.May2013.Models
 	{
 		public virtual int Id { get; set; }
 		public virtual string Name { get; set; }
+
+		public virtual string Behavior()
+		{
+			return "aniamal";
+		}
 	}
 
 	public class Dog : Animal
@@ -18,6 +23,11 @@ namespace NHibernate.Course.London.May2013.Models
 	public class GermanShepherd : Dog
 	{
 		public virtual bool Purebread { get; set; }
+
+		public override string Behavior()
+		{
+			return "GermanShepherd";
+		}
 	}
 
 	public class Cat : Animal
