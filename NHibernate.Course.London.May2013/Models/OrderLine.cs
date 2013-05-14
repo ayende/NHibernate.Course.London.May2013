@@ -20,11 +20,18 @@ namespace NHibernate.Course.London.May2013.Models
 		public OrderLineMap()
 		{
 			Id(x => x.Id, mapper => mapper.Generator(new HighLowGeneratorDef()));
-			Property(x => x.Quantity);
+			Property(x => x.Quantity, mapper =>
+				{
+					mapper.NotNullable(true);
+					mapper.Index("foo");
+				});
 			Cache(x=>x.Usage(CacheUsage.NonstrictReadWrite));
 
 			ManyToOne(x => x.Order, m => m.Column("OrderId"));
-			ManyToOne(x => x.Product);
+			ManyToOne(x => x.Product, mapper =>
+				{
+					mapper.Index("foo");
+				});
 
 			Join("OrderLinesCharges", mapper =>
 				{
