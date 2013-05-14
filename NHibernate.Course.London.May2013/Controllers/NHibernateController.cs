@@ -45,15 +45,15 @@ namespace NHibernate.Course.London.May2013.Controllers
 
 		private static ISessionFactory CreateSessionFactory()
 		{
-			if (System.IO.File.Exists("cfg.cache") &&
-			    System.IO.File.GetLastWriteTimeUtc("cfg.cache") > System.IO.File.GetLastWriteTimeUtc(Assembly.GetExecutingAssembly().Location))
-			{
-				using (var serializationStream = System.IO.File.OpenRead("cfg.cache"))
-				{
-					var configuration = (Configuration) new BinaryFormatter().Deserialize(serializationStream);
-					return configuration.BuildSessionFactory();
-				}
-			}
+			//if (System.IO.File.Exists("cfg.cache") &&
+			//	System.IO.File.GetLastWriteTimeUtc("cfg.cache") > System.IO.File.GetLastWriteTimeUtc(Assembly.GetExecutingAssembly().Location))
+			//{
+			//	using (var serializationStream = System.IO.File.OpenRead("cfg.cache"))
+			//	{
+			//		var configuration = (Configuration) new BinaryFormatter().Deserialize(serializationStream);
+			//		return configuration.BuildSessionFactory();
+			//	}
+			//}
 
 			Configuration cfg = new Configuration()
 				.DataBaseIntegration(db =>
@@ -77,8 +77,8 @@ namespace NHibernate.Course.London.May2013.Controllers
 			mapper.AddMappings(typeof (ProductMap).Assembly.GetTypes());
 			cfg.AddMapping(mapper.CompileMappingForAllExplicitlyAddedEntities());
 
-			using (var serializationStream = System.IO.File.Create("cfg.cache"))
-				new BinaryFormatter().Serialize(serializationStream, cfg);
+			//using (var serializationStream = System.IO.File.Create("cfg.cache"))
+			//	new BinaryFormatter().Serialize(serializationStream, cfg);
 
 			return cfg.BuildSessionFactory();
 		}

@@ -8,12 +8,22 @@ namespace NHibernate.Course.London.May2013.Controllers
 	{
 		public object Get(int id)
 		{
-			var cust = Session.Query<Customer>()
-							  .FetchMany(x => x.Addresses)
-							  .FetchMany(x => x.EmergencyContactNumbers)
-							  .Fetch(x => x.Animal)
-							  .SingleOrDefault(x => x.Id == id);
-			return Json(cust);
+			var cust = Session.Get<Customer>(id);
+			return Json(new
+				{
+					cust.FullName,
+					cust.Version
+				});
+		}
+
+		public object Update(int id, string name, int version)
+		{
+			var cust = Session.Get<Customer>(id);
+			cust.FullName = name;
+			cust.Version = version;
+			Session.Evict(cust);
+			Session.Update(cust);
+			return Json("Updated");
 		}
 
 		public object Query(int start = 0)
@@ -36,17 +46,20 @@ namespace NHibernate.Course.London.May2013.Controllers
 		{
 			var cust = Session.Query<Customer>()
 							  .Fetch(x => x.Animal)
-							  .SingleOrDefault(x => x.Id == id);
+							  .Where(x => x.Id == id)
+							  .ToFuture();
 
 			Session.Query<Customer>()
 				   .FetchMany(x => x.Addresses)
-				   .SingleOrDefault(x => x.Id == id);
+				   .Where(x => x.Id == id)
+				   .ToFuture();
 
 			Session.Query<Customer>()
 							  .FetchMany(x => x.EmergencyContactNumbers)
-							  .SingleOrDefault(x => x.Id == id);
+							  .Where(x => x.Id == id)
+							  .ToFuture();
 
-			return Json(cust);
+			return Json(cust.ToArray());
 		}
 
 		public object New(string name)

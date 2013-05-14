@@ -13,6 +13,7 @@ namespace NHibernate.Course.London.May2013.Models
 		public virtual IDictionary<string, Address> Addresses { get; set; }
 		public virtual IList<string> EmergencyContactNumbers { get; set; }
 		public virtual Animal Animal { get; set; }
+		public virtual  int Version { get; set; }
 		public Customer()
 		{
 			EmergencyContactNumbers = new List<string>();
@@ -35,6 +36,7 @@ namespace NHibernate.Course.London.May2013.Models
 			Property(x => x.FullName);
 
 			ManyToOne(x => x.Animal);
+			Version(x => x.Version, mapper => mapper.UnsavedValue(0));
 
 			List(x => x.EmergencyContactNumbers, mapper =>
 				{
