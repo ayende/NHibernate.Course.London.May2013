@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using NHibernate.Mapping.ByCode;
 using NHibernate.Mapping.ByCode.Conformist;
@@ -29,6 +30,7 @@ namespace NHibernate.Course.London.May2013.Models
 	{
 		public CustomerMap()
 		{
+
 			Id(x => x.Id, mapper => mapper.Generator(new NativeGeneratorDef()));
 			Property(x => x.FullName);
 
